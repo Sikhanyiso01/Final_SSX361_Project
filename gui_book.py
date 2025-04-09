@@ -157,7 +157,7 @@ class BookManagement:
             return
 
         # Check if book exists
-        book = db.get_book_by_title(title)
+        book = db.get_books_by_title(title)
         if not book:
             messagebox.showerror("Not Found", "Book with this title does not exist.")
             return
