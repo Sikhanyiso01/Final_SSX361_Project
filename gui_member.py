@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from db import Database
 
-db = Database("library.db")
+db = Database("libraryDB.db")
 
 class MemberManagement:
     def __init__(self, root, back_to_main_window_callback):
@@ -29,15 +29,19 @@ class MemberManagement:
         self.membership_type = ttk.Combobox(root, values=["Standard", "Premium", "Student"])
         self.membership_type.grid(row=2, column=1, padx=10, pady=5)
 
-        # Listbox and Scrollbar
-        self.member_list = tk.Listbox(root, height=12, width=80)
-        self.member_list.grid(row=4, column=0, columnspan=3, pady=10)
+        # Frame to contain the Listbox and Scrollbar
+        listbox_frame = tk.Frame(root)
+        listbox_frame.grid(row=4, column=0, columnspan=3, pady=10)
 
-        scrollbar = tk.Scrollbar(root)
-        scrollbar.grid(row=4, column=3, sticky='ns')
+        # Listbox and Scrollbar
+        self.member_list = tk.Listbox(listbox_frame, height=12, width=80)
+        self.member_list.pack(side="left", fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(listbox_frame, orient="vertical")
+        scrollbar.pack(side="right", fill="y")
 
         self.member_list.configure(yscrollcommand=scrollbar.set)
-        scrollbar.configure(command=self.member_list.yview)
+        scrollbar.configure(command=self.member_list.yview_scroll)
 
         self.member_list.bind('<<ListboxSelect>>', self.select_member)
 
@@ -50,9 +54,6 @@ class MemberManagement:
 
         tk.Button(root, text="Delete", width=12, command=self.delete_member,
                   bg=self.button_bg, fg=self.button_fg, font=self.button_font).grid(row=5, column=2)
-
-        tk.Button(root, text="Refresh", width=12, command=self.populate_members,
-                  bg=self.button_bg, fg=self.button_fg, font=self.button_font).grid(row=6, column=0)
 
         tk.Button(root, text="Back", width=12, command=self.go_back,
                   bg=self.button_bg, fg=self.button_fg, font=self.button_font).grid(row=6, column=2)
