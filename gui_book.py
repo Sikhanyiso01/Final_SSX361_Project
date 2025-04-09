@@ -147,14 +147,27 @@ class BookManagement:
         except AttributeError:
             messagebox.showwarning("Selection Error", "Please select a book to update")
 
-    def delete_book(self):
-        """Delete the selected book."""
-        try:
-            db.delete_book(self.selected_book_id)
-            self.populate_books()
-        except AttributeError:
-            messagebox.showwarning("Selection Error", "Please select a book to delete")
 
+    def delete_book(self):
+        """Delete a book by title if it exists."""
+        title = self.title_entry.get().strip()
+
+        if not title:
+            messagebox.showwarning("Input Error", "Please enter the book title to delete.")
+            return
+
+        # Check if book exists
+        book = db.get_book_by_title(title)
+        if not book:
+            messagebox.showerror("Not Found", "Book with this title does not exist.")
+            return
+
+        # Confirm deletion
+        confirm = messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete '{title}'?")
+        if confirm:
+            db.delete_book(book[0])  # book[0] is the book ID
+            self.populate_books()
+            messagebox.showinfo("Success", f"'{title}' has been deleted.")
     def checkout_book(self):
         """Checkout the book based on the member ID and book title."""
         member_id_input = self.checkout_member_id_entry.get().strip()
