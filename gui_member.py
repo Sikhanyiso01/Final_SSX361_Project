@@ -29,12 +29,16 @@ class MemberManagement:
         self.membership_type = ttk.Combobox(root, values=["Standard", "Premium", "Student"])
         self.membership_type.grid(row=2, column=1, padx=10, pady=5)
 
-        # Listbox and Scrollbar
-        self.member_list = tk.Listbox(root, height=12, width=80)
-        self.member_list.grid(row=4, column=0, columnspan=3, pady=10)
+        # Frame to contain the Listbox and Scrollbar
+        listbox_frame = tk.Frame(root)
+        listbox_frame.grid(row=4, column=0, columnspan=3, pady=10)
 
-        scrollbar = tk.Scrollbar(root)
-        scrollbar.grid(row=4, column=3, sticky='ns')
+        # Listbox and Scrollbar
+        self.member_list = tk.Listbox(listbox_frame, height=12, width=80)
+        self.member_list.pack(side="left", fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(listbox_frame, orient="vertical")
+        scrollbar.pack(side="right", fill="y")
 
         self.member_list.configure(yscrollcommand=scrollbar.set)
         scrollbar.configure(command=self.member_list.yview)

@@ -44,10 +44,20 @@ class Database:
                             (title, author, genre, availability_status, isbn))
         self.conn.commit()
 
-    def delete_book(self, title):
-        """Delete a book by its title."""
-        self.cursor.execute("DELETE FROM books WHERE title = ?", (title,))
-        self.conn.commit()
+    def delete_book_by_title(self, title):
+        """Delete a book from the database using its title."""
+        cursor = self.conn.cursor()
+
+        # Check if the book exists
+        cursor.execute("SELECT * FROM books WHERE title = ?", (title,))
+        book = cursor.fetchone()
+
+        if book:
+            cursor.execute("DELETE FROM books WHERE title = ?", (title,))
+            self.conn.commit()
+            return True, f"'{title}' has been deleted."
+        else:
+            return False, f"No book found with the title '{title}'."
 
     def checkout_book(self, membership_id, book_title):
         """Check out a book if the book exists and is available."""

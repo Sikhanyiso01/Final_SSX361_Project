@@ -37,17 +37,16 @@ class BookManagement:
         self.status_entry = ttk.Combobox(root, values=["Available", "Checked Out", "Reserved"])
         self.status_entry.grid(row=4, column=1, padx=10, pady=5)
 
-        # Listbox and Scrollbar for Book List
+        # Frame for Book List and Scrollbar
         self.book_list = tk.Listbox(root, height=12, width=80)
-        self.book_list.grid(row=6, column=0, columnspan=3, pady=10)
+        self.book_list.grid(row=6, column=0, columnspan=2, pady=10)
 
-        scrollbar = tk.Scrollbar(root)
-        scrollbar.grid(row=6, column=3, sticky='ns')
+        # Scrollbar placed in the next column (on the right side of the listbox)
+        scrollbar = tk.Scrollbar(root, orient="vertical", command=self.book_list.yview)
+        scrollbar.grid(row=6, column=2, sticky='ns')
 
+        # Linking the scrollbar to the listbox
         self.book_list.configure(yscrollcommand=scrollbar.set)
-        scrollbar.configure(command=self.book_list.yview)
-
-        self.book_list.bind('<<ListboxSelect>>', self.select_book)
 
         # Apply these settings to the buttons
         tk.Button(root, text="Add", width=12, command=self.add_book,
@@ -148,12 +147,21 @@ class BookManagement:
             messagebox.showwarning("Selection Error", "Please select a book to update")
 
     def delete_book(self):
-        """Delete the selected book."""
-        try:
-            db.delete_book(self.selected_book_id)
-            self.populate_books()
-        except AttributeError:
-            messagebox.showwarning("Selection Error", "Please select a book to delete")
+        """Delete a book using its title."""
+        title = self.title_entry.get().strip()
+
+        if not title:
+            messagebox.showwarning("Input Error", "Please enter the title of the book you want to delete.")
+            return
+
+        # Attempt to delete the book using the title
+        success, message = db.delete_book_by_title(title)
+
+        if success:
+            self.populate_books()  # Refresh the book list
+            messagebox.showinfo("Success", f"The book '{title}' has been deleted.")
+        else:
+            messagebox.showerror("Error", message)
 
     def checkout_book(self):
         """Checkout the book based on the member ID and book title."""
@@ -208,7 +216,7 @@ class BookManagement:
     def go_back(self):
         """Go back to the main window."""
         self.root.destroy()
-        import gui_main  # import only when needed to avoid circular import
-        main = tk.Tk()
-        gui_main.MainApp(main)
-        main.mainloop()
+        import gui_main  # import only when switching windows
+        root = tk.Tk()
+        gui_main.MainWindow(root)
+        root.mainloop()
