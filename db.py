@@ -31,12 +31,20 @@ class Database:
         self.cursor.execute("SELECT * FROM books")
         return self.cursor.fetchall()
 
+    def get_book_by_title(self, title):
+        self.cursor.execute("SELECT * FROM books WHERE title = ?", (title,))
+        return self.cursor.fetchone()
+
     def insert_book(self, title, author, isbn, genre, availability_status):
         """Insert a new book into the database."""
         self.cursor.execute(
             "INSERT INTO books (title, author, isbn, genre, availability_status) VALUES (?, ?, ?, ?, ?)",
             (title, author, isbn, genre, availability_status))
         self.conn.commit()
+
+    def isbn_exists(self, isbn):
+        self.cursor.execute("SELECT * FROM books WHERE isbn = ?", (isbn,))
+        return self.cursor.fetchone() is not None
 
     def update_book(self, title, author, isbn, genre, availability_status):
         """Update a book's details."""
