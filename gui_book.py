@@ -2,14 +2,14 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from db import Database
 
-db = Database("library.db")
+db = Database("libraryDB.db")
 
 class BookManagement:
     def __init__(self, root, back_to_main_window_callback):
         self.root = root
         self.back_to_main_window = back_to_main_window_callback
         self.root.title("Book Management")
-        self.root.geometry("800x550")
+        self.root.geometry("900x550")
 
         # Buttons and other UI elements
         self.button_bg = "#4a7abc"

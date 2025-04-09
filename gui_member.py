@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from db import Database
 
-db = Database("library.db")
+db = Database("libraryDB.db")
 
 class MemberManagement:
     def __init__(self, root, back_to_main_window_callback):
