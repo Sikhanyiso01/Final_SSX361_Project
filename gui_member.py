@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from db import Database
 
-db = Database("library.db")
+db = Database("libraryDB.db")
 
 class MemberManagement:
     def __init__(self, root, back_to_main_window_callback):
@@ -33,11 +33,15 @@ class MemberManagement:
         self.member_list = tk.Listbox(root, height=12, width=80)
         self.member_list.grid(row=4, column=0, columnspan=3, pady=10)
 
-        scrollbar = tk.Scrollbar(root)
-        scrollbar.grid(row=4, column=3, sticky='ns')
+        self.book_list = tk.Listbox(root, height=12, width=80)
+        self.book_list.grid(row=6, column=0, columnspan=2, pady=10)
 
-        self.member_list.configure(yscrollcommand=scrollbar.set)
-        scrollbar.configure(command=self.member_list.yview)
+        # Scrollbar placed in the next column (on the right side of the listbox)
+        scrollbar = tk.Scrollbar(root, orient="vertical", command=self.book_list.yview)
+        scrollbar.grid(row=6, column=2, sticky='ns')
+
+        # Linking the scrollbar to the listbox
+        self.book_list.configure(yscrollcommand=scrollbar.set)
 
         self.member_list.bind('<<ListboxSelect>>', self.select_member)
 

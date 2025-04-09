@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from db import Database
 
-db = Database("library.db")
+db = Database("libraryDB.db")
 
 class BookManagement:
     def __init__(self, root, back_to_main_window_callback):
@@ -47,7 +47,7 @@ class BookManagement:
         self.book_list.configure(yscrollcommand=scrollbar.set)
         scrollbar.configure(command=self.book_list.yview)
 
-        self.book_list.bind('<<ListboxSelect>>', self.select_book)
+
 
         # Apply these settings to the buttons
         tk.Button(root, text="Add", width=12, command=self.add_book,
