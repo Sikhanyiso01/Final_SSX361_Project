@@ -47,7 +47,7 @@ class BookManagement:
         self.book_list.configure(yscrollcommand=scrollbar.set)
         scrollbar.configure(command=self.book_list.yview)
 
-        self.book_list.bind('<<ListboxSelect>>', self.select_book)
+
 
         # Apply these settings to the buttons
         tk.Button(root, text="Add", width=12, command=self.add_book,
@@ -157,7 +157,7 @@ class BookManagement:
             return
 
         # Check if book exists
-        book = db.get_books_by_title(title)
+        book = db.search_books_by_title(title)
         if not book:
             messagebox.showerror("Not Found", "Book with this title does not exist.")
             return
