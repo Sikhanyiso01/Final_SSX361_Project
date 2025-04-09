@@ -62,6 +62,9 @@ class BookManagement:
         tk.Button(root, text="Refresh", width=12, command=self.populate_books,
                   bg=self.button_bg, fg=self.button_fg, font=self.button_font).grid(row=8, column=1)
 
+        tk.Button(root, text="Search", width=12, command=self.search_books_by_title,
+                  bg=self.button_bg, fg=self.button_fg, font=self.button_font).grid(row=7, column=3)
+
         tk.Button(root, text="Back", width=12, command=self.go_back,
                   bg=self.button_bg, fg=self.button_fg, font=self.button_font).grid(row=8, column=2)
 
@@ -98,16 +101,20 @@ class BookManagement:
         try:
             index = self.book_list.curselection()[0]
             selected = db.fetch_books()[index]
-            self.selected_book_id = selected[0]
+
             self.title_entry.delete(0, tk.END)
-            self.title_entry.insert(tk.END, selected[1])
+            self.title_entry.insert(tk.END, selected[0])
+
             self.author_entry.delete(0, tk.END)
-            self.author_entry.insert(tk.END, selected[2])
+            self.author_entry.insert(tk.END, selected[1])
+
             self.isbn_entry.delete(0, tk.END)
-            self.isbn_entry.insert(tk.END, selected[3])
+            self.isbn_entry.insert(tk.END, selected[2])
+
             self.genre_entry.delete(0, tk.END)
-            self.genre_entry.insert(tk.END, selected[4])
-            self.status_entry.set(selected[5])
+            self.genre_entry.insert(tk.END, selected[3])
+
+            self.status_entry.set(selected[4])
         except IndexError:
             messagebox.showwarning("Selection Error", "Please select a book from the list.")
 
@@ -170,6 +177,33 @@ class BookManagement:
             messagebox.showinfo("Success", message)
         else:
             messagebox.showerror("Error", message)
+
+    def search_books_by_title(self):
+        """Search books by title, highlight it in the listbox, and fill the entry fields."""
+        title = self.title_entry.get().strip()
+
+        if not title:
+            messagebox.showwarning("Input Error", "Please enter a title to search.")
+            return
+
+        books = db.fetch_books()
+        self.book_list.delete(0, tk.END)
+
+        found = False
+        for idx, book in enumerate(books):
+            display = f"Title: {book[0]} |Author : {book[1]} | ISBN: {book[2]} | Genre: {book[3]} | Status: {book[4]}"
+            self.book_list.insert(tk.END, display)
+
+            if book[0].lower() == title.lower():
+                self.book_list.selection_set(idx)
+                self.book_list.activate(idx)
+                self.book_list.see(idx)
+                self.select_book()
+                found = True
+                break
+
+        if not found:
+            messagebox.showinfo("Not Found", f"No book found with the title: '{title}'")
 
     def go_back(self):
         """Go back to the main window."""

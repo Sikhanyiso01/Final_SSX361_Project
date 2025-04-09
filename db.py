@@ -71,6 +71,11 @@ class Database:
 
         return True, "Book checked out successfully."
 
+    def search_books_by_title(self, title):
+        self.cursor.execute("SELECT title, author, isbn, genre, status FROM books WHERE LOWER(title) = ?",
+                         (title.lower(),))
+        return self.cursor.fetchall()
+
     # Member-related methods
     def select_members(self):
         """Fetch all members from the database."""
